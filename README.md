@@ -164,29 +164,68 @@ Questions
         // Hit this endpoint by POSTing to `/dogs/${ownerId}` with a body containing
         // JSON that can be deserialized to the CreateDogDto model (example request below)
         async create(
-          @Body() createDogDto: CreateDogDto,
-          @Param('ownerId') ownerId: string,
+            @Body() createDogDto: CreateDogDto,
+            // @Body exposes the body of the POST
+            @Param('ownerId') ownerId: string,
+            // @Param exposes the `ownerId` param from the path
+            @Res({ passthrough: true }) res: Response,
+            // @Res lets us modify the response to the client
         ) {
-          await this.dogsService.create(createDogDto, ownerId);
+            try {
+            return await this.dogsService.create(createDogDto, ownerId);
+            } catch (error) {
+            res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .send('Internal server error');
+            }
         }
 
         @Get()
-        async findAll(): Promise<Dog[]> {
-          return this.dogsService.findAll();
+        async findAll(@Res({ passthrough: true }) res: Response): Promise<Dog[]> {
+            try {
+            return await this.dogsService.findAll();
+            } catch (error) {
+            res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .send('Internal server error');
+            }
         }
 
         @Get(':id')
-        async findOne(@Param('id') id: string): Promise<Dog> {
-          const dog = await this.dogModel.findOne({ _id: id }).exec();
-          if (!dog) {
-            throw new NotFoundException();
-          }
-          return dog;
+        async findOne(
+            @Param('id') id: string,
+            @Res({ passthrough: true }) res: Response,
+        ): Promise<Dog> {
+            try {
+                return await this.dogsService.findOne(id);
+            } catch (error) {
+            // we can throw specific exceptions from the
+            // service layer and return appropriate statuses
+            if (error instanceof NotFoundException) {
+                res.status(HttpStatus.NOT_FOUND).send(error.message);
+            }
+            res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .send('Internal server error');
+            }
         }
 
         @Delete(':id/:ownerId')
-          async delete(@Param('id') id: string, @Param('ownerId') ownerId: string) {
-          return this.dogsService.delete(id, ownerId);
+        async delete(
+            @Param('id') id: string,
+            @Param('ownerId') ownerId: string,
+            @Res({ passthrough: true }) res: Response,
+        ) {
+            try {
+                return await this.dogsService.delete(id, ownerId);
+            } catch (error) {
+            if (error instanceof NotFoundException) {
+                res.status(HttpStatus.NOT_FOUND).send(error.message);
+            }
+            res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .send('Internal server error');
+            }
         }
       }
 
@@ -230,7 +269,11 @@ Questions
         }
 
         async findOne(id: string): Promise<Dog> {
-          return this.dogModel.findOne({ _id: id }).exec();
+          const dog = await this.dogModel.findOne({ _id: id }).exec();
+          if (!dog) {
+            throw new NotFoundException();
+          }
+          return dog;
         }
 
         async delete(id: string, ownerId: string) {
