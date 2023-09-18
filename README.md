@@ -137,7 +137,7 @@ Questions
 
     - The API layer needs to support a few CRUD operations for each model.
     - The spec does not say anything about me getting weekends or holidays off, so this will be built under the assumption that users will be able to book 1 hour slots from 9 AM - 5 PM every day. I will not take timezones into account.
-    - The API layer can be viewed at `./dog-waka-waka-backend/src` and is built with Nest JS. I will summarize the `Dogs` routes below for brevity, and the `Appointments` and `Users` routes are similar, with some notable callouts.
+    - The API layer can be viewed at https://github.com/schreyerpeter/DogWakaWakaBackend and is built with Nest JS. I will summarize the `Dogs` routes below for brevity, and the `Appointments` and `Users` routes are similar, with some notable callouts.
     - I would love to fire up the app for you and show it off, assuming I get invited to do so, but you won't be able try it unless I whitelist your IP with my MongoDB Atlas cluster. Ideally I would have Dockerized everything.
 
     ```javascript
@@ -289,12 +289,12 @@ Questions
 
 ```javascript
 // src/components/atoms/BookingButton.tsx
-"use client";
+'use client';
 
-import { useAppointmentsState } from "@/src/hooks/useAppState";
-import BasicButton from "./BasicButton";
-import Dropdown from "./Dropdown";
-import ClientApiProvider from "@/src/providers/api_provider";
+import { useAppointmentsState } from '@/src/hooks/useAppState';
+import BasicButton from './BasicButton';
+import Dropdown from './Dropdown';
+import ClientApiProvider from '@/src/providers/api_provider';
 
 // **************************************************************************
 // Scenarios:
@@ -365,8 +365,8 @@ export default function BookingButton({
             // mutate SWR state so the UI reflects changes
             mutate(
               data.filter(
-                (apt: AppointmentType) => apt._id != deletedAppointment._id
-              )
+                (apt: AppointmentType) => apt._id != deletedAppointment._id,
+              ),
             );
         }}
       >
