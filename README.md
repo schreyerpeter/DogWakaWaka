@@ -57,6 +57,7 @@ Questions
 
         - Cypress optionally ships with Next, and is a wonderful tool for both E2E and Component tests, especially if you implement it into your CI/CD flow.
         - NOTE: I did not end up having much time for tests, but did throw together a little bit around the Appointments controller, as it seems like it would be the most critical to have coverage for. Next steps would be to get it actually talking to the DB and not mocking so many things. I did not get around to UI unit testing, but I have a good amount of experience with React Testing Library, which is very interaction-focused.
+        - You can run the tests in the server repo with `npm run test`
 
     ### `CI/CD`
 
